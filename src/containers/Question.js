@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../stylesheets/Question.css'
 
 const Question = (props) => {
   const initialState = {
@@ -38,14 +39,25 @@ const Question = (props) => {
     currentQuestionNumber: 1
   }
   const [ state, setState ] = useState(initialState);
+  
   let onNext = (event) => {
-    let checkedAnswer = document.querySelector('input[name="answers"]:checked').id;
-    console.log('checkedAnswer', checkedAnswer);
-    // TODO: update state with answer for currentQuestionId
-    let radioButtons = document.querySelectorAll('input[type="radio"]');
-    let radioButtonsArray = Array.prototype.slice.call(radioButtons);
-    radioButtonsArray.forEach( radioButton => radioButton.checked = false);
-    setState({...state, currentQuestionId: state.questions[state.currentQuestionId].next, currentQuestionNumber: state.currentQuestionNumber + 1})
+    // get the radio button that was checked
+    let checkedAnswer = document.querySelector('input[name="answers"]:checked')
+    // set its checked property to false for the next question
+    checkedAnswer.checked = false;
+    // "Increment" the currentQuestionID
+    // Increment the currentQuestionNumber
+    // Register the answer the user gave
+    let currentUpdatedAnswer = {id: state.currentQuestionId, answer: checkedAnswer.id, correct: state.questions[state.currentQuestionId].correct, next: state.questions[state.currentQuestionId].next};
+    let questions = state.questions;
+    questions[state.currentQuestionId] = currentUpdatedAnswer;
+
+    setState({
+      ...state, 
+      currentQuestionId: state.questions[state.currentQuestionId].next, currentQuestionNumber: state.currentQuestionNumber + 1,
+      questions
+    });
+    console.log(state);
   }
 
   return (
